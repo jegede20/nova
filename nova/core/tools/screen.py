@@ -8,7 +8,6 @@ It never clicks coordinates the model invented out of thin air.
 from __future__ import annotations
 
 import time
-from pathlib import Path
 from typing import Any
 
 from ..logging_setup import get_logger
@@ -18,7 +17,6 @@ from .registry import ToolResult, registry
 log = get_logger("tools.screen")
 
 _vision_hook: Any = None      # set by NovaCore: async fn(image_path, question) -> str
-_last_screenshot: str | None = None
 
 
 def set_vision_hook(fn: Any) -> None:
@@ -56,7 +54,6 @@ def _uia():
     category="screen",
 )
 def take_screenshot(region: str = "") -> ToolResult:
-    global _last_screenshot
     pg = _pyautogui()
     if pg is None:
         return ToolResult.fail("Screen capture isn't available - pyautogui or a display is missing.")
@@ -74,7 +71,6 @@ def take_screenshot(region: str = "") -> ToolResult:
         img.save(str(path))
     except Exception as e:
         return ToolResult.fail(f"I couldn't capture the screen: {e}")
-    _last_screenshot = str(path)
     _prune_screenshots()
     return ToolResult.success("Captured the screen.", path=str(path),
                               size=f"{img.width}x{img.height}")
@@ -365,11 +361,3 @@ async def wait(seconds: float) -> ToolResult:
     delay = max(0.0, min(300.0, float(seconds)))
     await asyncio.sleep(delay)
     return ToolResult.success(f"Waited {delay:.0f} seconds.")
-
-
-def last_screenshot() -> str | None:
-    return _last_screenshot
-
-
-def screenshot_path_valid(path: str) -> bool:
-    return bool(path) and Path(path).exists()

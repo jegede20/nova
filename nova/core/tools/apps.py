@@ -9,7 +9,6 @@ from __future__ import annotations
 import os
 import shutil
 import subprocess
-import sys
 from pathlib import Path
 
 from ..logging_setup import get_logger
@@ -272,7 +271,3 @@ def list_windows() -> ToolResult:
 
     win32gui.EnumWindows(cb, None)
     return ToolResult.success(f"{len(titles)} windows are open.", windows=titles[:40])
-
-
-def _sysname() -> str:
-    return "Windows" if IS_WINDOWS else sys.platform

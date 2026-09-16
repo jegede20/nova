@@ -174,17 +174,6 @@ class EmptyState(QWidget):
         layout.addWidget(label)
 
 
-class LinkButton(QPushButton):
-    def __init__(self, text: str, parent: QWidget | None = None) -> None:
-        super().__init__(text, parent)
-        self.setStyleSheet(
-            f"QPushButton {{ background: transparent; border: none; color: {theme.ACCENT};"
-            f"font-size: 12px; padding: 2px 4px; text-align: left; }}"
-            f"QPushButton:hover {{ color: #7ba4f5; }}"
-        )
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
-
-
 class Divider(QFrame):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)

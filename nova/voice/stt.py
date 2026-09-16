@@ -111,8 +111,3 @@ def _logprob_to_confidence(logprobs: list[float]) -> float:
         return 0.0
     avg = sum(logprobs) / len(logprobs)
     return round(min(1.0, math.exp(avg)), 3)
-
-
-def float_audio(raw: bytes) -> np.ndarray:
-    """int16 PCM bytes -> float32 mono."""
-    return np.frombuffer(raw, dtype=np.int16).astype(np.float32) / 32768.0

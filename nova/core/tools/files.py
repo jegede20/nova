@@ -10,7 +10,7 @@ import os
 import shutil
 import subprocess
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 
 from ..logging_setup import get_logger
@@ -434,10 +434,3 @@ def list_folder(path: str, limit: int = 50) -> ToolResult:
     except OSError as e:
         return ToolResult.fail(f"I couldn't read that folder: {e}")
     return ToolResult.success(f"{target.name} contains {len(entries)} items.", entries=entries)
-
-
-def yesterday_range() -> tuple[float, float]:
-    now = datetime.now()
-    start = (now - timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
-    end = start + timedelta(days=1)
-    return start.timestamp(), end.timestamp()
