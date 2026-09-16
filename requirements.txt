@@ -1,19 +1,31 @@
-# --- Core (required) ---
-PySide6>=6.6
-httpx>=0.27
+# ---------------------------------------------------------------
+# Nova requirements. Install with:  pip install -r requirements.txt
+# ---------------------------------------------------------------
 
-# --- Windows integration (installed on Windows only) ---
-pywin32>=306 ; sys_platform == "win32"
-winshell>=0.6 ; sys_platform == "win32"
-comtypes>=1.4 ; sys_platform == "win32"
-pyttsx3>=2.90
-psutil>=5.9
-pyautogui>=0.9.54
-pillow>=10.0
-numpy>=1.26
+# --- Core: Nova will not start without these ---
+PySide6>=6.6            # desktop UI + system tray
+httpx>=0.27             # talking to AI providers and watching websites
+numpy>=1.26             # audio processing for voice identity
 
-# --- Optional but recommended (Nova degrades gracefully without them) ---
-# speech-to-text (local):        pip install faster-whisper
-# UI-automation (accessibility): pip install uiautomation
-# browser automation:            pip install playwright && playwright install chromium
-# windows toast notifications:   pip install win11toast
+# --- Windows integration ---
+pywin32>=306 ; sys_platform == "win32"      # focus windows, credential manager
+psutil>=5.9             # detect and close running applications
+keyring>=24.0           # stores API keys in Windows Credential Manager
+
+# --- Voice ---
+pyttsx3>=2.90           # spoken replies (uses built-in Windows voices)
+sounddevice>=0.4        # microphone input
+faster-whisper>=1.0     # local speech-to-text (audio never leaves your PC)
+
+# --- Screen and input control ---
+pyautogui>=0.9.54       # mouse and keyboard
+pillow>=10.0            # required by pyautogui for screenshots
+uiautomation>=2.0 ; sys_platform == "win32"   # find buttons by name, not coordinates
+
+# --- Files and notifications ---
+send2trash>=1.8         # deletes go to the Recycle Bin instead of vanishing
+win11toast>=0.34 ; sys_platform == "win32"    # native Windows notifications
+
+# --- Browser automation ---
+# Also run once after installing:  playwright install chromium
+playwright>=1.40

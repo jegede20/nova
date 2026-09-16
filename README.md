@@ -17,21 +17,28 @@ arguments, and every risky action is gated behind your explicit approval.
 
 ## Quick start
 
+> **New to Python or setting this up for the first time?**
+> Follow **[SETUP_WINDOWS.md](SETUP_WINDOWS.md)** instead — a click-by-click guide
+> that assumes no prior experience. Or just double-click `setup_nova.bat`.
+
 ```bat
 git clone <your-repo> nova
 cd nova
+setup_nova.bat          :: creates .venv and installs everything
+start_nova.bat          :: launch
+```
+
+Or manually:
+
+```bat
 python -m venv .venv
 .venv\Scripts\activate
-
 pip install -r requirements.txt
-
-:: recommended extras
-pip install faster-whisper sounddevice        :: local speech recognition
-pip install playwright && playwright install chromium
-pip install uiautomation win11toast send2trash keyring
-
+playwright install chromium
 python run_nova.py
 ```
+
+Run `check_nova.bat` any time to see what is installed and what is missing.
 
 Nova opens its dashboard and places an icon in the system tray. Closing the window
 keeps it running; exit from the tray menu.
