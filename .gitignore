@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+nova_data/
+*.db
+*.log
+.env
+# Nova data folder (created at runtime)

@@ -1,0 +1,34 @@
+[project]
+name = "nova-assistant"
+version = "1.0.0"
+description = "Nova - a voice-controlled Windows desktop AI agent"
+requires-python = ">=3.10"
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = ["E501", "B008"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+follow_imports = "silent"
+
+# The Qt stubs return Optional for nearly every lookup (layout items, widgets,
+# parents). Guarding each one would bury the real logic, so union-attr is
+# disabled for the UI layer only.
+[[tool.mypy.overrides]]
+module = "nova.winplat.startup"
+disable_error_code = ["attr-defined"]   # winreg is Windows-only
+
+[[tool.mypy.overrides]]
+module = "nova.ui.*"
+disable_error_code = ["union-attr", "attr-defined", "assignment", "arg-type", "index"]
