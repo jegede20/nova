@@ -1,7 +1,7 @@
 """File and folder tools: search, open, create, rename, copy, move, delete.
 
 Search is scoped to the user's profile by default so Nova never crawls the whole
-disk, and deletes go to the Recycle Bin when send2trash/winshell is available.
+disk, and deletes go to the Recycle Bin when send2trash is available.
 """
 
 from __future__ import annotations
