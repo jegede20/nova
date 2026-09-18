@@ -244,11 +244,20 @@ class NovaAgent:
     # ---------- planning ----------
     @staticmethod
     def _looks_complex(command: str) -> bool:
+        """Only plan multi-step requests -- planning costs an extra API call.
+
+        Matches whole words: "open downloads" must not count "download" as a
+        second verb just because it appears inside "downloads".
+        """
+        import re as _re
+
         lowered = command.lower()
-        connectors = [" and then ", " then ", " and ", ", and ", " after that "]
-        verbs = ["find", "create", "move", "rename", "download", "open", "delete", "copy", "watch", "search"]
-        verb_count = sum(1 for v in verbs if v in lowered)
-        return verb_count >= 2 or any(c in lowered for c in connectors) and verb_count >= 2
+        verbs = ["find", "create", "make", "move", "rename", "download", "open",
+                 "delete", "copy", "watch", "search"]
+        pattern = r"\b(" + "|".join(verbs) + r")(s|es|ed|ing)?\b"
+        verb_count = len(_re.findall(pattern, lowered))
+        has_connector = bool(_re.search(r"\b(and then|then|and|after that)\b", lowered))
+        return verb_count >= 2 and has_connector
 
     async def _make_plan(self, command: str) -> list[str]:
         try:

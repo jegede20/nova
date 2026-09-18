@@ -130,27 +130,38 @@ This is what lets Nova understand everyday language instead of fixed phrases.
 
 | Option | Cost | Best for |
 | --- | --- | --- |
-| **OpenAI** | Pay per use, roughly $1–3/month for personal use | Easiest, and it can see your screen — **recommended** |
-| **Groq** | Free tier available | Very fast, but cannot see your screen |
-| **Ollama** | Free | Runs on your PC, nothing sent online. Needs a strong PC |
+| **Groq** | Free tier, no card needed | Fastest replies, and free — **recommended** |
+| **OpenAI** | Pay per use, roughly $1–3/month | Slightly better at complex multi-step requests |
+| **Ollama** | Free | Runs entirely on your PC. Needs a powerful machine |
 
-### Getting an OpenAI key
+### Getting a Groq key (free)
 
-1. Go to **https://platform.openai.com/api-keys**
-2. Sign up or log in.
-3. Add a small amount of credit under **Billing** (about $5 lasts a long time).
-   Keys don't work without credit.
-4. Click **Create new secret key**, name it "Nova", and create it.
-5. **Copy it now** — it starts with `sk-` and is shown only once.
+1. Go to **https://console.groq.com/keys**
+2. Sign up — Google or GitHub sign-in works, **no credit card needed**.
+3. Click **Create API Key**, name it "Nova", and create it.
+4. **Copy it now** — it starts with `gsk_` and is shown only once.
 
 ### Putting it into Nova
 
 1. In Nova, click **Settings** in the left sidebar.
-2. Under **AI provider**, leave Provider as `openai`.
+2. Under **AI provider**, set **Provider** to `groq`.
+   The model boxes fill in automatically:
+   - Model: `openai/gpt-oss-20b`
+   - Vision model: `qwen/qwen3.6-27b`
+
+   Leave both as they are.
 3. Paste your key into the **API key** box and press **Tab**.
 4. Click **Test connection**.
 
-You want to see green text: `Connected — gpt-4o-mini replied.`
+You want to see green text: `Connected — openai/gpt-oss-20b replied.`
+
+> **Which Groq model?** `openai/gpt-oss-20b` is the default: it's on the free
+> tier, it's the fastest, and it handles Nova's tool calling properly. If you
+> find it struggling with long multi-step requests, change Model to
+> `openai/gpt-oss-120b` — smarter, still free tier, a bit slower.
+>
+> Avoid `llama-3.3-70b-versatile`: Groq moved it to Enterprise-only, so a
+> normal key gets an error.
 
 > Your key is stored in the **Windows Credential Manager**, the same vault
 > Windows uses for saved passwords. It is never written into Nova's database

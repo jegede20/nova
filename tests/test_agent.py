@@ -210,3 +210,19 @@ async def test_history_is_recorded(db, settings):
     await agent.handle("open chrome")
     kinds = {r["kind"] for r in db.recent_history(20)}
     assert {"command", "action", "response"} <= kinds
+
+
+# ---------- planner gating (each plan costs an extra API call) ----------
+def test_simple_commands_do_not_trigger_planning():
+    """Regression: 'open downloads' matched the verb 'download' as a substring."""
+    for command in ["open downloads", "open my downloads folder", "open chrome",
+                    "create a folder called Test", "download all the pdfs",
+                    "find my latest pdf", "search for news"]:
+        assert NovaAgent._looks_complex(command) is False, command
+
+
+def test_multi_step_commands_do_trigger_planning():
+    for command in ["find my latest pdf and move it to documents",
+                    "open chrome and search for bitcoin",
+                    "find the pdf, rename it and move it to Reports"]:
+        assert NovaAgent._looks_complex(command) is True, command

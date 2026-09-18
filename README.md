@@ -55,10 +55,12 @@ OpenAI-compatible endpoint works via `custom`.
 
 | Provider | API key needed | Notes |
 | --- | --- | --- |
-| `openai` | yes | `gpt-4o-mini` is a good default; supports vision |
-| `anthropic` | yes | `claude-3-5-sonnet-latest`; supports vision |
-| `groq` | yes | Fast and cheap; no vision |
+| `openai` | yes | `gpt-4o-mini`. Supports vision |
+| `anthropic` | yes | `claude-3-5-sonnet-latest`. Supports vision |
+| `groq` | yes | `openai/gpt-oss-20b` + `qwen/qwen3.6-27b` for vision. Free tier available, very fast |
 | `ollama` | **no** | Fully local, e.g. `llama3.1`. No data leaves your PC |
+
+Selecting a provider fills in a working model and vision model automatically.
 
 Paste the key into Settings and press **Test connection**. Keys go to the Windows
 Credential Manager — never into the database or logs. `OPENAI_API_KEY` and friends

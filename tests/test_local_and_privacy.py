@@ -96,3 +96,47 @@ def test_task_state_transitions(db):
     assert row["state"] == "running"
     assert row["progress"] == 0.4
     assert len(db.list_tasks(states=["running"])) == 1
+
+
+# ---------- provider defaults ----------
+def test_every_provider_has_working_defaults():
+    """Each provider must name a real model, an endpoint and a vision model."""
+    from nova.ai.provider import PROVIDER_DEFAULTS
+
+    for name, cfg in PROVIDER_DEFAULTS.items():
+        if name == "custom":
+            continue
+        assert cfg["model"], f"{name} has no default model"
+        assert "vision" in cfg, f"{name} has no vision model"
+
+
+def test_groq_defaults_are_free_tier_and_tool_capable(settings):
+    """Groq's llama-3.3-70b is Enterprise-only; the default must not use it."""
+    from nova.ai.provider import PROVIDER_DEFAULTS, build_provider, build_vision_provider
+
+    groq = PROVIDER_DEFAULTS["groq"]
+    assert groq["model"] == "openai/gpt-oss-20b"
+    assert "llama-3.3-70b" not in groq["model"], "Enterprise-only model"
+    assert groq["base_url"] == "https://api.groq.com/openai/v1"
+
+    settings.set("ai_provider", "groq")
+    settings.set("ai_model", "")
+    settings.set("ai_base_url", "")
+    settings.set("vision_model", "")
+
+    provider = build_provider(settings)
+    assert provider.model == "openai/gpt-oss-20b"
+    assert provider.base_url == "https://api.groq.com/openai/v1"
+
+    # Screen understanding must pick the multimodal model, not the text one.
+    vision = build_vision_provider(settings)
+    assert vision.model == "qwen/qwen3.6-27b"
+    assert vision.base_url == "https://api.groq.com/openai/v1"
+
+
+def test_explicit_model_choice_overrides_the_default(settings):
+    from nova.ai.provider import build_provider
+
+    settings.set("ai_provider", "groq")
+    settings.set("ai_model", "openai/gpt-oss-120b")
+    assert build_provider(settings).model == "openai/gpt-oss-120b"

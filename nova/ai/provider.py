@@ -225,12 +225,32 @@ PROVIDERS: dict[str, type[AIProvider]] = {
     "custom": OpenAIProvider,
 }
 
+# Sensible starting points per provider. "vision" is the model used for
+# "what's on my screen"; it can differ from the reasoning model.
 PROVIDER_DEFAULTS = {
-    "openai": {"base_url": "", "model": "gpt-4o-mini"},
-    "anthropic": {"base_url": "", "model": "claude-3-5-sonnet-20241022"},
-    "groq": {"base_url": "https://api.groq.com/openai/v1", "model": "llama-3.3-70b-versatile"},
-    "ollama": {"base_url": "http://localhost:11434/v1", "model": "llama3.1"},
-    "custom": {"base_url": "", "model": ""},
+    "openai": {
+        "base_url": "",
+        "model": "gpt-4o-mini",
+        "vision": "gpt-4o-mini",
+    },
+    "anthropic": {
+        "base_url": "",
+        "model": "claude-3-5-sonnet-20241022",
+        "vision": "claude-3-5-sonnet-20241022",
+    },
+    "groq": {
+        # openai/gpt-oss-20b is fast, cheap and on Groq's free tier with solid
+        # tool calling. Qwen handles the screenshots.
+        "base_url": "https://api.groq.com/openai/v1",
+        "model": "openai/gpt-oss-20b",
+        "vision": "qwen/qwen3.6-27b",
+    },
+    "ollama": {
+        "base_url": "http://localhost:11434/v1",
+        "model": "llama3.1",
+        "vision": "llama3.2-vision",
+    },
+    "custom": {"base_url": "", "model": "", "vision": ""},
 }
 
 
@@ -245,8 +265,15 @@ def build_provider(settings: Any) -> AIProvider:
 
 
 def build_vision_provider(settings: Any) -> AIProvider:
+    """Provider for screen understanding.
+
+    Falls back to the provider's default vision model rather than the text
+    model, because on some providers (Groq) the text model cannot see images.
+    """
     base = build_provider(settings)
-    vision_model = settings.get("vision_model", "") or base.model
+    key = str(settings.get("ai_provider", "openai")).lower()
+    defaults = PROVIDER_DEFAULTS.get(key, {})
+    vision_model = settings.get("vision_model", "") or defaults.get("vision", "") or base.model
     return type(base)(base.api_key, vision_model, base.base_url, base.temperature)
 
 

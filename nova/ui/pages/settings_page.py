@@ -172,8 +172,14 @@ class SettingsPage(QWidget):
         if defaults.get("model"):
             self.model.setText(defaults["model"])
             self._save("ai_model", defaults["model"])
+        if defaults.get("vision"):
+            self.vision.setText(defaults["vision"])
+            self._save("vision_model", defaults["vision"])
         self.base_url.setText(defaults.get("base_url", ""))
         self._save("ai_base_url", defaults.get("base_url", ""))
+        # The API key is per-provider, so refresh the hint for the new one.
+        self.api_key.setPlaceholderText(
+            "Saved securely" if self.s.api_key_for(name) else "Paste your API key")
         self.core.agent.reload_provider()
 
     def _save_key(self) -> None:
